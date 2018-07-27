@@ -1,0 +1,79 @@
+*{
+	font-family: sans-serif;
+}
+	
+body{
+	padding: 0px;
+	margin: auto;	
+	width: 1080px;
+}
+
+div.form{
+	margin-top: 60px;
+}
+
+
+label.userDataLabels{
+	width: 80px;
+	display: inline-block;
+	margin: 6px;
+}
+
+div.navi{
+	width: max-width;
+}
+
+div.pictures{
+	width: max-width;
+}
+
+button{
+	height: 60px;
+	width: 140px;
+	font-size: 16pt;
+	background-image: linear-gradient(0deg, rgb(23, 143, 23) 5%, rgb(35, 245, 105) 95%);
+	color: rgb(255, 255, 255);
+	font-weight: bold;
+	box-shadow: 0px 14px 14px -9px rgba(0, 0, 0, 0.6); 
+	border: outset rgb(42, 155, 61) 1px;
+	border-radius: 18px;
+	margin-top: 16px;
+	margin-bottom: 52px;
+	margin-right: 20px;
+	transition: ease-in-out all 300ms;
+}
+
+button:hover{
+	color: rgb(10, 58, 10);
+	background-color: rgb(247, 247, 247);
+	transform: translate(0px, 4px);
+	box-shadow: 0px 13px 11px -12px rgba(0, 0, 0, 0.4);
+}
+
+button:focus {
+	outline: none;
+	}
+
+input.userDataInput{
+	background-color: FloralWhite;
+}
+
+img.arrow{
+	width: 60px;
+	margin-right: 20px;
+}
+
+img.picture{
+	width: 240px;
+	margin: 8px;
+	margin-bottom: 35px;
+	border: solid black 0.8px;
+	border-radius: 14px;
+	transition: border-radius 0.6s ease-in, ease-in-out box-shadow 500ms;
+	box-shadow: 0px 14px 14px -9px rgba(0, 0, 0, 0.6); 	
+}
+
+img.picture:hover{
+	border-radius: 0px;
+	box-shadow: 0px 13px 11px -12px rgba(0, 0, 0, 0.4);
+}
