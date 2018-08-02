@@ -7,16 +7,32 @@
 	var userName;
 	var password;
 	var ip;
-
     var auth = "";
     
     var loggedIn = false;
 
-    var json;
-    var imageArray = new Array();
+    var json = new Array();
 
-    var page = 0;
+	var page = 0;
 
+	var images = new Array();
+
+
+	//Image-Objekt
+	function Image(json){
+		this.created = json.created,
+		this.location = json.location,
+		this.thumbnail = json.thumbnail,
+		this.imageSource = json.imageSource,
+		this.imageName = json.imageName,
+		this.metaData = json.metaData,
+		this.owner = json.owner,
+		this.tagList = json.tagList,
+		this.thumbnailBlobUrl = "",
+		this.imageSourceBlobUrl = ""
+	} 
+
+	//Links
 	function updateLinks(){
         ip = window.location.hostname;
 		getImageInfoLink = "http://" + ip + ":4434/bootstrap/v1/images/" + userName;
@@ -27,6 +43,9 @@
         logoutLink       = "http://" + ip + ":4434/bootstrap/v1/webclient/";
 	}
 
+
+
+//---------------Funktionen---------------//	
 	function updateAuthentication(){
 		var userNameAndPwBase64 = userName + ":" + password;
 		userNameAndPwBase64 = btoa(userNameAndPwBase64);
@@ -35,10 +54,11 @@
 
 	function getImageInfo(){
 
-	    userName = document.getElementById("userName").value
-		password = document.getElementById("password").value
-        userName = "user2";
-		password = "password";
+		if(!loggedIn){
+			userName = document.getElementById("userName").value
+			password = document.getElementById("password").value
+		}
+		
 
 		updateLinks();
 		updateAuthentication();
@@ -69,17 +89,33 @@
         request.send();
 	}
 
-
 	function createNavi(){
-		if(json == null || !loggedIn){
+		if(json == null || !loggedIn || document.getElementById("upload") != null){
 			return;
 		}
 
-        document.getElementById("userData").outerHTML="";
+		if(!loggedIn){	
+			document.getElementById("userData").outerHTML="";
+		}
+
 
 		var uploadButton = document.createElement("BUTTON");
-        uploadButton.innerHTML = "Upload";
-        document.getElementById("navigator").appendChild(uploadButton);
+		
+		uploadButton.setAttribute("id", "upload");
+		uploadButton.setAttribute("onclick", "document.getElementById('upload-input').click();");
+		uploadButton.innerHTML = "Upload";
+		
+		var uploadInput = document.createElement("INPUT");
+		uploadInput.setAttribute("type", "file");
+		uploadInput.setAttribute("id", "upload-input");
+		uploadInput.setAttribute("style", "display: none;");
+		uploadInput.setAttribute("accept", "image/jpeg, image/png");
+		uploadInput.setAttribute("onchange", "uploadImage()");	
+		uploadInput.setAttribute("multiple", "true");	
+		
+		uploadButton.innerHTML = uploadInput.outerHTML + "Upload";
+		
+		document.getElementById("navigator").appendChild(uploadButton);
 
 
 		var arrowLeft = document.createElement("IMG");
@@ -94,21 +130,40 @@
 		document.getElementById("navigator").appendChild(arrowLeft);
 	}
 
-    function goLeft(){
-        if(page==0){
-            return;
-        }
-        page--;
-        createImages();
-    }
+	function uploadImage() {
+		var file = document.getElementById('upload-input').files[0];
+		var reader = new FileReader();
+		reader.readAsDataURL(file);
 
-    function goRight(){
-        if(page >= json.length / 16 -1){
-            return;
-        }
-        page++;
-        createImages();
-    }
+		reader.onload = function () {
+			var baseToImageSource = reader.result.substring(23, reader.result.length);
+			var request = new XMLHttpRequest();
+			
+			request.open("POST", uploadLink);
+			request.setRequestHeader("Authorization", auth);
+			request.setRequestHeader("Content-Type", "application/json");
+
+
+
+			jsonString = {
+				"imageSource":baseToImageSource,
+				"imageName":"eduard232.jpg"
+			}
+
+			request.addEventListener('load', function(event) {
+				if (request.status != 201){
+					alert("Upload failed"+ request.status);
+				}
+				else{
+					alert("Upload successful :-)");
+					getImageInfo();
+				}
+			});
+			request.send(JSON.stringify(jsonString));
+			};
+
+	 }
+
 
 
 	function createImages(){
@@ -123,34 +178,26 @@
             document.getElementById("pictureDiv").innerHTML = null;
         }
 		
-
-		for(var i = 0  + page * 16; i <= 15 * (page + 1) + page; i++) {
+		for(var i = 0  + page * 16; i < 16 * (page + 1) + page; i++) {
 			if(json[i] == null){
 				break;
-            }
-            
-            var imageContainer = document.createElement("A");
-            imageContainer.setAttribute("href", json[i].imageSource);
-            imageContainer.innerHTML = "<img class='picture' src=" + json[i].imageSource + ">"
+			}
 
-            document.getElementById("pictureDiv").appendChild(imageContainer);
-        }
-    }
-    
-    function sleep(milliseconds) {
-        var start = new Date().getTime();
-        for (var i = 0; i < 1e7; i++) {
-          if ((new Date().getTime() - start) > milliseconds){
-            break;
-          }
-        }
-      }
+			var image = new Image(json[i]);
+			images.push(image);
+			getThumbnailToUrl(json[i].imageSource, i);
+		}
+		
+	}
 
-   /* function getImage(linkToImage){
+    function getThumbnailToUrl(linkToImage, i){
         var request = new XMLHttpRequest();
 		
-		request.open("GET", linkToImage);
+		request.open("GET", linkToImage, true);
 		request.setRequestHeader("Authorization", auth);
+		request.responseType = "arraybuffer";
+
+		thumbnailUrl = null;
 
 		request.addEventListener('load', function(event) {
 			if (request.status != 200){
@@ -162,14 +209,58 @@
 				}
 			}
 			else{
-				var image = request.response;
-                imageArray.push(image);
+				var blob = new Blob([request.response], {type: "image/jpeg"});
+				var url = URL.createObjectURL(blob);
+				images[i].thumbnailBlobUrl = url;
+				showImage(i);
 			}
 		});
-        request.send();
-    } */
+		request.send();
+	} 
+
+	function showImage(i){
+		var imgTag = document.createElement("IMG");
+		imgTag.setAttribute("class", "picture");
+		imgTag.setAttribute("src", images[i].thumbnailBlobUrl);
+		imgTag.setAttribute("onClick", "setImageSource(" + i + ")");
+		
+		var imageContainer = document.createElement("A");
+		imageContainer.innerHTML = imgTag.outerHTML;
+		document.getElementById("pictureDiv").appendChild(imageContainer);	
+
+	}
+	
+
+	function goLeft(){
+        if(page==0){
+            return;
+        }
+        page--;
+        createImages();
+    }
+
+    function goRight(){
+        if(page >= json.length / 16 -1){
+            return;
+        }
+        page++;
+        createImages();
+	}
+	
+
+	
 
 
     function logout(){
+		loggedIn = false;
         window.location.href = logoutLink;
-    }
+	}
+
+	function sleep(milliseconds) {
+        var start = new Date().getTime();
+        for (var i = 0; i < 1e7; i++) {
+          if ((new Date().getTime() - start) > milliseconds){
+            break;
+          }
+        }
+      }
