@@ -1,17 +1,24 @@
 *{
-	font-family: sans-serif;
+	font-family: Arial, sans-serif;
 }
 	
 body{
 	padding: 0px;
-	margin: auto;	
-	width: 1080px;
+	width: 100%;
+	margin: auto;
+	background-color: rgba(243, 239, 224, 1);
 }
 
 div.form{
-	margin-top: 60px;
+	max-width: 100%;
+	margin-top: 40px;
+	
 }
 
+div#userData{
+	width: 1080px;
+	margin: auto;
+}
 
 label.userDataLabels{
 	width: 80px;
@@ -20,54 +27,97 @@ label.userDataLabels{
 }
 
 div.navi{
-	width: max-width;
+	width: 1080px;
+	height: 90px;
+	margin-left: auto;
+	margin-right: auto;
+}
+
+div.navi.sticky{
+	width: 1080px;
+	height: 90px;
+
+	margin: auto;
+
+	top: 1;
+
+	background-color: rgba(243, 239, 224, 0.5);
+	border-bottom: solid black 1.5px;
+
+	margin-bottom: 20px;
+}
+
+#arrowDiv{
+	width: 180px;
+	padding-top: 26px;
+	padding-right: 40px;
+	float: right;
 }
 
 div.pictures{
-	width: max-width;
+	width: 1080px;
+	margin: auto;
 }
 
 button{
 	height: 60px;
-	width: 140px;
-	font-size: 16pt;
-	background-image: linear-gradient(0deg, rgb(23, 143, 23) 5%, rgb(35, 245, 105) 95%);
+	width: 120px;
+	font-size: 15pt;
+	background-image: linear-gradient(0deg, rgb(20, 97, 20) 5%, rgb(35, 245, 105) 95%);
 	color: rgb(255, 255, 255);
-	font-weight: bold;
 	box-shadow: 0px 14px 14px -9px rgba(0, 0, 0, 0.6); 
-	border: outset rgb(42, 155, 61) 1px;
-	border-radius: 18px;
+	border-color: gray;
+	border-width: 0.8px;
+	border-radius: 8px;
 	margin-top: 16px;
 	margin-bottom: 52px;
-	margin-right: 20px;
+	margin-right: 10px;
+	margin-left: 10px;
 	transition: ease-in-out all 300ms;
 }
 
+
 button:hover{
 	color: rgb(10, 58, 10);
-	background-color: rgb(247, 247, 247);
 	transform: translate(0px, 4px);
 	box-shadow: 0px 13px 11px -12px rgba(0, 0, 0, 0.4);
 }
 
+.logout{
+	background-image: linear-gradient(0deg, rgb(202, 68, 34) 5%, rgb(248, 186, 51) 95%);
+}
+
+#logout:hover{
+	color: beige;
+}
+
+#refresh{
+	background-image: linear-gradient(0deg, rgb(12, 126, 134) 5%, rgb(150, 233, 219) 95%);
+}
+
+#delete{
+	background-image: linear-gradient(0deg, rgb(126, 3, 3) 5%, rgb(216, 58, 58) 95%);
+}
+
 button:focus {
 	outline: none;
-	}
+}
 
 input.userDataInput{
 	background-color: FloralWhite;
 }
 
 img.arrow{
-	width: 60px;
-	margin-right: 20px;
+	width: 65px;
+	margin-right: 25px;
+	
 }
 
 img.picture{
 	width: 240px;
 	margin: 8px;
 	margin-bottom: 35px;
-	border: solid black 0.8px;
+	border: solid black 1px;
 	border-radius: 14px;
 	transition: border-radius 0.6s ease-in, ease-in-out box-shadow 500ms;
 	box-shadow: 0px 14px 14px -9px rgba(0, 0, 0, 0.6); 	
@@ -76,4 +126,8 @@ img.picture{
 img.picture:hover{
 	border-radius: 0px;
 	box-shadow: 0px 13px 11px -12px rgba(0, 0, 0, 0.4);
+}
+
+img.picture.marked{
+	filter: opacity(50%);
 }
